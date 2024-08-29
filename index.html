@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000000; /* Latar belakang hitam */
+        }
+
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #333333, #000000);
+            animation: animateBackground 10s infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes animateBackground {
+            0% {
+                background: radial-gradient(circle, #333333, #000000);
+            }
+            100% {
+                background: radial-gradient(circle, #000000, #333333);
+            }
+        }
+
+        .welcome-message {
+            position: absolute;
+            top: 70px; /* Jarak dari atas untuk menghindari tombol garis tiga */
+            width: 100%;
+            text-align: center;
+            font-size: 22px;
+            color: #ffffff;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            opacity: 0; /* Awalnya tersembunyi */
+            transform: translateY(-20px);
+            animation: slideIn 1s ease-out forwards, glow 1.5s infinite alternate;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(0, 255, 0, 1);
+            }
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            background-color: #f8f8f8;
+            color: #333;
+            transition: all 0.3s ease-in-out;
+        }
+
+        input[type="text"]:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        .qr-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .download-instructions {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .menu-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            background: transparent;
+            z-index: 1;
+        }
+
+        .menu-icon div {
+            width: 30px;
+            height: 3px;
+            background-color: #ffffff;
+            border-radius: 3px;
+        }
+
+        .menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background-color: #333333;
+            border: 1px solid #444444;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            text-align: left;
+            width: 150px;
+            z-index: 1;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        .menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .menu.hide {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .menu a {
+            display: block;
+            padding: 5px 10px;
+            text-decoration: none;
+            color: #ffffff;
+            border-bottom: 1px solid #444444;
+        }
+
+        .menu a:last-child {
+            border-bottom: none;
+        }
+
+        .menu a:hover {
+            background-color: #555555;
+        }
+
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+
+
+
+    <div class="menu-icon" onclick="toggleMenu()">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <div class="menu">
+        <a href="mailto:ukyaja@gmail.com">Email</a>
+        <a href="https://wa.me/6282184635341">Whatsapp</a>
+        <a href="https://instagram.com/sskwk_">Instagram</a>
+    </div>
+
+    <div class="container">
+        <h1>Link to QR</h1>
+        <input type="text" id="linkInput" placeholder="Masukkan link di sini">
+        <button onclick="generateQR()">Generate QR Code</button>
+
+        <div id="qrContainer" class="qr-container">
+            <img id="qrCode" class="qr-code" src="" alt="QR Code">
+            <p id="downloadInstructions" class="download-instructions">
+                Tekan 3 detik pada QR kemudian klik unduh gambar
+                <br>
+                <br>
+                Website ini diciptakan hanya untuk uji coba projek @Bisyrun Sahlul Khuluqi
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function generateQR() {
+            const link = document.getElementById('linkInput').value;
+            const qrCode = document.getElementById('qrCode');
+            const qrContainer = document.getElementById('qrContainer');
+            const downloadInstructions = document.getElementById('downloadInstructions');
+
+            if (link) {
+                qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(link)}&size=150x150`;
+                qrContainer.style.display = 'block';
+            } else {
+                alert('Masukkan link terlebih dahulu');
+            }
+        }
+
+        function toggleMenu() {
+            const menu = document.querySelector('.menu');
+            const isVisible = menu.classList.contains('show');
+            menu.classList.toggle('show', !isVisible);
+            menu.classList.toggle('hide', isVisible);
+        }
+    </script>
+</body>
+</html>
